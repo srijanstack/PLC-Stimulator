@@ -1,0 +1,50 @@
+:root{font-family:"Segoe UI",Arial,sans-serif;color:#1b2b41;background:#e9eef4}*{box-sizing:border-box}body{margin:0;min-width:780px}button,input{font:inherit}button{cursor:pointer}.app{height:100vh;display:grid;grid-template-columns:310px minmax(0,1fr);overflow:hidden}.app.wide{grid-template-columns:1fr}.archive{display:flex;flex-direction:column;background:#f8fafc;border-right:1px solid #bfcbd8;overflow:hidden}.archive-header{height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 13px;background:#e0e7ef;border-bottom:1px solid #c8d2de;font-weight:700}.archive-header>span,.app-mark,.top-actions button,.properties-header>span{display:flex;align-items:center;gap:8px}.icon-button{border:0;background:transparent;padding:6px;color:#53657c}.project-section{padding:13px;border-bottom:1px solid #d9e0e8}.project-section label,.property-field label{display:block;color:#65758a;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:6px}.project-input{width:100%;border:1px solid #b8c6d6;border-radius:4px;padding:9px;font-weight:600}.archive-search{display:flex;gap:8px;align-items:center;margin:10px;padding:8px;border:1px solid #ccd6e1;background:white;border-radius:5px}.archive-search input{width:100%;border:0;outline:0;font-size:12px}.archive-tree{padding:5px 7px;overflow:auto;flex:1}.tree-row{width:100%;display:flex;align-items:center;gap:7px;text-align:left;background:transparent;border:0;padding:8px 5px;color:#293b51;font-size:12px;font-weight:650}.tree-row:hover{background:#eaf1f8}.folder-icon{color:#d49a30;fill:#f9df9a}.tree-children{margin-left:15px;padding-left:7px;border-left:1px solid #d5dee8}.instruction{width:100%;display:flex;align-items:center;gap:8px;text-align:left;border:1px solid transparent;background:transparent;padding:8px 6px;margin:2px 0;border-radius:4px;font-size:12px;color:#283b52}.instruction:hover{background:#eaf2fd;border-color:#c7dbf8}.instruction-symbol{width:67px;min-width:67px;font-family:Consolas,monospace;font-size:12px;color:#1d4f8c;font-weight:700;white-space:nowrap}.instruction-name{flex:1}.planned-dot{width:6px;height:6px;border-radius:50%;background:#c5a15a}.archive-footer{display:flex;gap:8px;padding:12px;background:#edf2f7;border-top:1px solid #d4dde7;font-size:11px;line-height:1.5;color:#65758a}.editor{display:flex;flex-direction:column;min-width:0;overflow:hidden}.topbar{min-height:54px;background:#fbfcfe;border-bottom:1px solid #cbd5e1;display:flex;align-items:center;gap:12px;padding:0 15px}.app-mark{color:#1c4e8a}.version{font-size:10px;background:#e8eef6;padding:3px 6px;border-radius:3px;color:#65758a}.top-actions{display:flex;gap:7px;margin-left:auto}.top-actions button,.topbar>button{display:flex;align-items:center;gap:6px;background:white;border:1px solid #c5d0dd;border-radius:4px;padding:7px 10px;font-size:11px;color:#33465e}.top-actions .run-active{background:#d8f2e2;color:#17683a}.editor-tabs{display:flex;align-items:center;height:39px;background:#eef2f7;border-bottom:1px solid #cbd5e1;padding-left:14px;font-size:11px;color:#66758a}.editor-tabs>span:not(.editor-status){padding:12px 15px;border-right:1px solid #d5dde7}.active-tab{background:white;border-bottom:2px solid #2773cf;color:#1e4d83;font-weight:700}.editor-status{margin-left:auto;padding-right:15px}.workspace{padding:14px;display:flex;flex-direction:column;gap:14px;overflow:auto;flex:1}.network,.properties{border:1px solid #c6d1de;background:white;border-radius:5px}.network-header,.properties-header{display:flex;justify-content:space-between;align-items:center;background:#edf2f7;border-bottom:1px solid #cbd5e1;padding:10px 12px;font-size:12px;font-weight:700}.network-index{display:inline-grid;place-items:center;width:19px;height:19px;background:#d6e6fa;color:#1e5ca1;border-radius:3px;margin-right:6px}.network-comment{color:#74849a;font-weight:400}.network-body{display:flex;min-height:230px;padding:20px 18px;align-items:stretch;background:repeating-linear-gradient(0deg,#fff,#fff 27px,#f4f6f9 28px)}.rail{width:4px;min-width:4px;background:#202c3b;margin:7px 0}.rung-content{flex:1;display:flex;align-items:center;overflow-x:auto;min-width:0;padding:0 7px}.ladder-slot{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:115px;height:128px;padding:5px 8px;border:1px solid transparent;border-radius:4px;cursor:pointer}.ladder-slot:hover{background:#f2f7ff;border-color:#c2d8f7}.ladder-slot.selected{background:#eaf3ff;border-color:#5d9bea}.ladder-slot:not(:last-of-type)::after{content:"";position:absolute;height:3px;background:#202c3b;width:calc(100% + 16px);left:50%;top:64px;z-index:0}.ladder-symbol{z-index:1;background:white;padding:4px 0;font-family:Consolas,monospace;font-size:19px;font-weight:700;white-space:nowrap;color:#172333}.slot-name{font-size:10px;color:#5d6f84;margin-bottom:9px;white-space:nowrap}.slot-address{font-size:10px;font-weight:700;color:#315984;margin-top:9px;white-space:nowrap}.insert-slot{height:70px;min-width:65px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border:1px dashed #a9b9cc;border-radius:4px;background:#f9fbfd;color:#6b7f96;font-size:10px}.network-foot{padding:8px 12px;border-top:1px solid #e0e6ed;background:#fafbfd;color:#738399;font-size:10px}.delete-button{display:flex;align-items:center;gap:5px;background:#fff;border:1px solid #d8c4c4;border-radius:4px;color:#a33d3d;padding:5px 8px;font-size:10px}.properties-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;padding:14px}.property-field input{width:100%;border:1px solid #cbd5e1;border-radius:4px;padding:8px;font-size:12px}.property-field input[readonly]{background:#f3f6fa}.status-chip{display:inline-block;padding:7px 9px;border-radius:4px;font-size:10px}.supported{background:#e0f4e8;color:#226b43}.planned{background:#fff3d8;color:#89621a}.property-description{grid-column:1/-1;color:#697a90;font-size:11px;margin:0}.empty-properties{padding:20px;color:#7c8ba0;font-size:12px}.statusbar{height:28px;background:#e3eaf2;border-top:1px solid #c4d0de;display:flex;align-items:center;gap:8px;padding:0 12px;font-size:10px;color:#5f7187}.status-dot{width:7px;height:7px;border-radius:50%;background:#34a36b}.spacer{flex:1}@media(max-width:900px){.app{grid-template-columns:260px minmax(0,1fr)}.workspace{padding:8px}}
+/* Inline ladder editing: tag names and PLC addresses are edited on the element itself. */
+.workspace{align-items:stretch}
+.network{width:100%;min-width:0}
+.network-body{overflow-x:auto}
+.rung-content{min-height:190px;gap:0}
+.ladder-slot{flex-shrink:0;min-width:130px;height:150px;gap:0;padding:7px 6px}
+.ladder-slot:not(:last-of-type)::after{width:calc(100% + 2px);left:50%;top:74px}
+.slot-name-input,.slot-address-input{width:100%;max-width:116px;text-align:center;background:transparent;border:1px solid transparent;border-radius:3px;outline:none;font-size:10px;padding:4px 2px;z-index:2}
+.slot-name-input{font-weight:600;color:#5d6f84;margin-bottom:5px}
+.slot-address-input{font-weight:700;color:#315984;margin-top:5px}
+.slot-name-input:hover,.slot-address-input:hover{border-color:#b7c9de;background:#fff}
+.slot-name-input:focus,.slot-address-input:focus{border-color:#4e8bd7;background:#fff;box-shadow:0 0 0 2px #dceaff}
+.ladder-slot.invalid-slot .slot-address-input{color:#b42318;border-color:#e6a09a;background:#fff6f5}
+.address-error{position:absolute;right:4px;top:4px;width:15px;height:15px;display:grid;place-items:center;border-radius:50%;background:#c43b32;color:white;font-size:10px;font-weight:800}
+.slot-hint{position:absolute;bottom:-14px;left:0;right:0;text-align:center;font-size:9px;color:#3c6da7;white-space:nowrap;z-index:3}
+.editor-help{border:1px solid #cbd7e4;border-radius:5px;background:#f8fbff;padding:12px 14px;color:#607187;font-size:11px;line-height:1.7}
+.editor-help code{background:#eaf0f7;border-radius:3px;padding:2px 4px;color:#234e7b}
+@media(max-width:900px){.ladder-slot{min-width:120px}.slot-name-input,.slot-address-input{max-width:105px}}
+/* Visual PLC simulation */
+.ladder-slot.energized {
+  background: #d9fbe4;
+  border-color: #22a447;
+  box-shadow: 0 0 8px rgba(34, 164, 71, 0.25);
+  transition: background-color 150ms ease, box-shadow 150ms ease;
+}
+
+.ladder-slot.energized .ladder-symbol {
+  color: #08752d;
+  background: #d9fbe4;
+}
+
+.ladder-slot.energized .slot-name-input,
+.ladder-slot.energized .slot-address-input {
+  color: #08752d;
+}
+
+/* Make energized rung connections green too */
+.ladder-slot.energized:not(:last-of-type)::after {
+  background: #22a447;
+}
+
+/* Indicate that contacts can be clicked during simulation */
+.ladder-slot.sim-input {
+  cursor: pointer;
+}
+
+.ladder-slot.sim-input:hover {
+  border-color: #22a447;
+}

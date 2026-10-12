@@ -1,0 +1,16 @@
+{
+  "document_id": "rockwell_1756_pm001_logix_5000_controllers_common_procedures",
+  "title": "1756 PM001 Logix 5000 Controllers Common Procedures",
+  "publication_number": "1756-PM001",
+  "publisher": "Rockwell Automation",
+  "source_url": "",
+  "file_name": "1756-PM001-Logix-5000-Controllers-Common-Procedures.pdf",
+  "sha256": "5643414341db24c7051f3a8dd1a5ac4ab9370c74e17cf38e11145892bdb51cf1",
+  "page_count": 1,
+  "character_count": 1044,
+  "extracted_text": "knowledge_base/extracted/1756-PM001-Logix-5000-Controllers-Common-Procedures.txt",
+  "extraction_library": "pypdf",
+  "is_index_only": true,
+  "extraction_timestamp": "2026-10-10T07:06:53.622433+00:00",
+  "index_warning": "Single/dual-page index listing manual publication numbers."
+}

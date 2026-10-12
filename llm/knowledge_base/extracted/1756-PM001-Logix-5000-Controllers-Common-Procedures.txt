@@ -1,0 +1,27 @@
+===== PDF PAGE 1 =====
+Programming Manual 
+Logix 5000 Controllers Common Procedures  
+1756 ControlLogix, 1756 GuardLogix, 1769 CompactLogix, 1769 Compact GuardLogix, 1789 
+SoftLogix, 5069 CompactLogix, Studio 5000 Logix Emulate  
+This publication links to a collection of programming manuals that describe how 
+you can use procedures that are common to all Logix5000 controller projects. 
+Programming Manual Publication Number 
+Add-On Instructions 1756-PM010 
+ASCII Strings 1756-PM013 
+Data Access 1756-PM020 
+EDS AOP Guidelines for Logix Designer 1756-PM002 
+Function Block Diagram 1756-PM009 
+IEC 61131-3 Compliance 1756-PM018 
+Import/Export 1756-PM019 
+Information and Status 1756-PM015 
+I/O and Tag Data 1756-PM004 
+Ladder Diagram 1756-PM008 
+Major, Minor, and I/O Faults 1756-PM014 
+Messages 1756-PM012 
+Nonvolatile Memory Card 1756-PM017 
+Produced and Consumed Tags 1756-PM011 
+Program Parameters 1756-PM021 
+Security 1756-PM016 
+Sequential Function Charts 1756-PM006 
+Structured Text 1756-PM007 
+Tasks, Programs, and Routines 1756-PM005

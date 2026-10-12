@@ -1,0 +1,260 @@
+"""
+FastAPI application for the PLC Simulator Embedded AI Assistant.
+
+Exposes endpoints for system health, knowledge base status, semantic passage
+retrieval, and grounded RAG chat completion.
+"""
+
+from __future__ import annotations
+
+import logging
+from typing import Any, Dict
+
+from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
+
+from api.dependencies import (
+    get_llm_client,
+    get_model_config,
+    get_rag_config,
+    get_rag_pipeline,
+    get_retriever,
+    get_vector_store,
+)
+
+from api.schemas import (
+    ChatRequest,
+    ChatResponse,
+    CitationSchema,
+    HealthResponse,
+    KnowledgeBaseStatusResponse,
+    RetrievedChunkSchema,
+    RetrieveRequest,
+    RetrieveResponse,
+)
+from llm.llama_cpp_client import LlamaCppClient, LlamaCppError
+from llm.model_config import ModelConfig
+from rag.config import RAGConfig
+from rag.pipeline import RAGPipeline
+from rag.retriever import DocumentRetriever
+from rag.vector_store import VectorStore, VectorStoreError
+
+logger = logging.getLogger("api.main")
+
+rag_cfg = get_rag_config()
+
+app = FastAPI(
+    title="PLC Simulator Embedded AI Assistant API",
+    description=(
+        "Backend API for grounded PLC programming assistance based on authoritative "
+        "Rockwell Automation documentation (Logix 5000 / Studio 5000). "
+        "Designed to be embedded into the web-based PLC simulator."
+    ),
+    version="0.1.0",
+)
+
+# CORS middleware for the future simulator web frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=rag_cfg.cors_origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["*"],
+)
+
+
+@app.get(
+    "/health",
+    response_model=HealthResponse,
+    summary="System Health & Connectivity Check",
+    tags=["Monitoring"],
+)
+def check_health(
+    llm: LlamaCppClient = Depends(get_llm_client),
+    store: VectorStore = Depends(get_vector_store),
+    model_cfg: ModelConfig = Depends(get_model_config),
+) -> HealthResponse:
+    """Check connectivity to PostgreSQL database and local llama.cpp LLM server."""
+    # 1. Database status
+    db_health = store.check_health()
+
+    # 2. LLM status
+    try:
+        llm_health = llm.check_health()
+        llm_status = {
+            "reachable": True,
+            "status_code": llm_health.get("status_code", 200),
+            "base_url": model_cfg.client.base_url,
+            "model_name": model_cfg.server_launch.model_name,
+        }
+    except Exception as err:
+        llm_status = {
+            "reachable": False,
+            "error": "Could not connect to local llama-server",
+            "base_url": model_cfg.client.base_url,
+            "model_name": model_cfg.server_launch.model_name,
+        }
+
+    overall_ok = db_health.get("reachable", False) and llm_status.get("reachable", False)
+
+    return HealthResponse(
+        status="ok" if overall_ok else "degraded",
+        database=db_health,
+        llm=llm_status,
+        version="0.1.0",
+    )
+
+
+@app.get(
+    "/knowledge-base/status",
+    response_model=KnowledgeBaseStatusResponse,
+    summary="Knowledge Base Document & Vector Index Status",
+    tags=["Knowledge Base"],
+)
+def get_kb_status(
+    store: VectorStore = Depends(get_vector_store),
+) -> KnowledgeBaseStatusResponse:
+    """Retrieve indexed document and chunk counts from PostgreSQL."""
+    try:
+        status_info = store.get_status()
+        health = status_info.get("health", {})
+
+        return KnowledgeBaseStatusResponse(
+            documents_count=status_info.get("documents", 0),
+            chunks_count=status_info.get("chunks", 0),
+            database_target=health.get("target", "PostgreSQL"),
+            pgvector_ready=health.get("tables_initialized", False),
+        )
+    except Exception as err:
+        logger.error(f"Error fetching knowledge base status: {err}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to retrieve knowledge base status from database.",
+        )
+
+
+@app.post(
+    "/retrieve",
+    response_model=RetrieveResponse,
+    summary="Semantic Documentation Retrieval (Debug Endpoint)",
+    tags=["Knowledge Base"],
+)
+def retrieve_passages(
+    payload: RetrieveRequest,
+    retriever: DocumentRetriever = Depends(get_retriever),
+) -> RetrieveResponse:
+    """Retrieve relevant documentation passages without generating an LLM response."""
+    try:
+        chunks = retriever.retrieve(
+            query=payload.query,
+            top_k=payload.top_k,
+            threshold=payload.threshold,
+        )
+
+        formatted_chunks = [
+            RetrievedChunkSchema(
+                chunk_id=c.chunk_id,
+                document_title=c.document_title,
+                publication_number=c.publication_number,
+                page_number=c.page_number,
+                end_page_number=c.end_page_number,
+                content=c.content,
+                score=c.score,
+                citation=c.citation,
+            )
+            for c in chunks
+        ]
+
+        return RetrieveResponse(
+            query=payload.query,
+            count=len(formatted_chunks),
+            results=formatted_chunks,
+        )
+    except VectorStoreError as err:
+        logger.error(f"Vector search failed: {err}")
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Vector database is currently unavailable or uninitialized.",
+        )
+    except Exception as err:
+        logger.error(f"Unexpected retrieval error: {err}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error processing retrieval request.",
+        )
+
+
+@app.post(
+    "/chat",
+    response_model=ChatResponse,
+    summary="Grounded PLC Assistant Chat Completion",
+    tags=["Assistant"],
+)
+def chat_completion(
+    payload: ChatRequest,
+    pipeline: RAGPipeline = Depends(get_rag_pipeline),
+) -> ChatResponse:
+    """Answer PLC questions using grounded Rockwell Automation documentation and citations."""
+    sim_ctx_dict = payload.simulator_context.model_dump(exclude_none=True) if payload.simulator_context else None
+
+    try:
+        rag_answer = pipeline.answer_question(
+            question=payload.question,
+            simulator_context=sim_ctx_dict,
+            top_k=payload.top_k,
+            threshold=payload.threshold,
+        )
+
+        citations_schema = [
+            CitationSchema(
+                document_title=c.document_title,
+                publication_number=c.publication_number,
+                page_number=c.page_number,
+                end_page_number=c.end_page_number,
+                citation_str=str(c),
+            )
+            for c in rag_answer.citations
+        ]
+
+        chunks_schema = [
+            RetrievedChunkSchema(
+                chunk_id=rc.chunk_id,
+                document_title=rc.document_title,
+                publication_number=rc.publication_number,
+                page_number=rc.page_number,
+                end_page_number=rc.end_page_number,
+                content=rc.content,
+                score=rc.score,
+                citation=rc.citation,
+            )
+            for rc in rag_answer.retrieved_chunks
+        ]
+
+        return ChatResponse(
+            question=payload.question,
+            answer=rag_answer.answer,
+            citations=citations_schema,
+            retrieved_chunks=chunks_schema,
+            latency_seconds=rag_answer.latency_seconds,
+            tokens_per_second=rag_answer.tokens_per_second,
+            metrics_source=rag_answer.metrics_source,
+        )
+
+    except VectorStoreError as err:
+        logger.error(f"RAG database search failed: {err}")
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Vector search database is currently unavailable.",
+        )
+    except LlamaCppError as err:
+        logger.error(f"LLM generation failed: {err}")
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"Local LLM inference server error: {err}",
+        )
+    except Exception as err:
+        logger.error(f"Unexpected error in /chat: {err}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal error processing chat completion.",
+        )

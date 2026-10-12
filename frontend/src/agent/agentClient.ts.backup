@@ -1,0 +1,151 @@
+﻿```typescript
+import type { Bits } from '../types'
+
+const RAG_API = 'http://127.0.0.1:8001/chat'
+
+/** Snapshot of the current PLC simulator workbench. */
+export type AgentContext = {
+  project: string
+  running: boolean
+  ladder: {
+    name: string
+    address: string
+    instructionId: string
+    instruction: string
+    kind: string
+    network?: number
+    networkTitle?: string
+  }[]
+  hardware: {
+    label: string
+    type: string
+    kind: 'input' | 'output'
+    address: string
+    signal: boolean
+  }[]
+  inputs: Bits
+  outputs: Bits
+}
+
+export type HistoryMessage = {
+  role: 'user' | 'assistant'
+  content: string
+}
+
+type RagCitation = {
+  document_title?: string
+  publication_number?: string
+  page_number?: number | null
+  end_page_number?: number | null
+  citation_str?: string
+}
+
+type RagResponse = {
+  answer?: string
+  citations?: RagCitation[]
+}
+
+export async function askAgent(
+  message: string,
+  context: AgentContext,
+  history: HistoryMessage[] = []
+): Promise<string> {
+  const controller = new AbortController()
+  const timer = window.setTimeout(() => controller.abort(), 130000)
+
+  try {
+    // The RAG API accepts question + simulator_context, not the
+    // simulator's original message/history/context request structure.
+    const recentHistory = history
+      .slice(-6)
+      .map(item => `${item.role === 'user' ? 'User' : 'Assistant'}: ${item.content}`)
+      .join('\n')
+
+    const question = [
+      recentHistory ? `Recent conversation:\n${recentHistory}` : '',
+      `Current question: ${message}`
+    ].filter(Boolean).join('\n\n').slice(-1900)
+
+    const simulatorContext = {
+      extra_context: JSON.stringify({
+        project: context.project,
+        simulation_running: context.running,
+        ladder_networks: context.ladder,
+        hardware: context.hardware,
+        input_bits: context.inputs,
+        output_bits: context.outputs
+      })
+    }
+
+    const response = await fetch(RAG_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        question,
+        simulator_context: simulatorContext
+      }),
+      signal: controller.signal
+    })
+
+    const data = await response.json().catch(() => null) as
+      | (RagResponse & { detail?: string; message?: string })
+      | null
+
+    if (!response.ok) {
+      throw new Error(
+        data?.detail || data?.message ||
+        `RAG API returned HTTP ${response.status}`
+      )
+    }
+
+    if (!data || typeof data.answer !== 'string') {
+      throw new Error('The RAG API returned an invalid response.')
+    }
+
+    const citations = Array.isArray(data.citations)
+      ? data.citations
+          .map(citation => {
+            if (citation.citation_str?.trim()) {
+              return citation.citation_str.trim()
+            }
+
+            const title = citation.document_title || 'PLC reference'
+            const publication = citation.publication_number
+            const startPage = citation.page_number
+            const endPage = citation.end_page_number
+
+            let reference = title
+            if (publication) reference += ` (${publication})`
+
+            if (typeof startPage === 'number') {
+              reference += `, p. ${startPage}`
+              if (typeof endPage === 'number' && endPage !== startPage) {
+                reference += `â€“${endPage}`
+              }
+            }
+
+            return reference
+          })
+          .filter(Boolean)
+      : []
+
+    const uniqueCitations = [...new Set(citations)]
+
+    return uniqueCitations.length
+      ? `${data.answer}\n\nSources:\n${uniqueCitations.map(c => `â€¢ ${c}`).join('\n')}`
+      : data.answer
+  } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      return 'The RAG request timed out. Check that the chatbot API and local LLM server are running, then try again.'
+    }
+
+    const detail = error instanceof Error
+      ? error.message
+      : 'Unknown connection error'
+
+    return `Could not get a response from the RAG chatbot.\n\n${detail}\n\nCheck that the FastAPI service is running at ${RAG_API}. No local fallback answer was generated.`
+  } finally {
+    window.clearTimeout(timer)
+  }
+}
+```

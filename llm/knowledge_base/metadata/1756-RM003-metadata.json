@@ -1,0 +1,12 @@
+{
+  "document_id": "rockwell_1756_rm003_general_instructions",
+  "title": "Logix 5000 Controllers General Instructions",
+  "publication_number": "1756-RM003",
+  "publisher": "Rockwell Automation, Inc.",
+  "source_url": "https://literature.rockwellautomation.com/idc/groups/literature/documents/rm/1756-rm003_-en-p.pdf",
+  "file_name": "1756-RM003-General-Instructions-Reference.pdf",
+  "sha256": "3ad1653f6b5e88c8ae83dad1f4e5c20e4a2cc96e3e53a16229a307c29ef549fc",
+  "page_count": 927,
+  "extracted_text": "knowledge_base/extracted/1756-RM003-General-Instructions-Reference.txt",
+  "extraction_library": "pypdf"
+}

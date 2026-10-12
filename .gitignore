@@ -2,6 +2,8 @@ __pycache__/
 *.py[cod]
 .venv/
 .env
-backend/data/
+backend-node/data/
 frontend/node_modules/
 frontend/dist/
+backend-node/node_modules/
+dist/

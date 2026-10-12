@@ -1,0 +1,13 @@
+{
+  "document_id": "rockwell_1756_pm008_ladder_diagram",
+  "title": "Logix 5000 Controllers Ladder Diagram",
+  "publication_number": "1756-PM008J-EN-P",
+  "revision_date": "July 2022",
+  "publisher": "Rockwell Automation",
+  "source_url": "https://literature.rockwellautomation.com/idc/groups/literature/documents/pm/1756-pm008_-en-p.pdf",
+  "file_name": "1756-PM008-Ladder-Diagram.pdf",
+  "sha256": "b103e1bace3c51051b3d6c4d625e2d1615758ff7ce0efda7b2dde10bf60eaf35",
+  "page_count": 24,
+  "extracted_text": "knowledge_base/extracted/1756-PM008-Ladder-Diagram.txt",
+  "extraction_library": "pypdf"
+}

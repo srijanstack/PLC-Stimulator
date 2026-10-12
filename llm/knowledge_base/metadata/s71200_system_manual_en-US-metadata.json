@@ -1,0 +1,16 @@
+{
+  "document_id": "siemens_s7_1200_system_manual_v4_7",
+  "title": "SIMATIC S7-1200 Programmable Controller System Manual",
+  "publication_number": "A5E02486680-AQ",
+  "revision_date": "December 2024",
+  "publisher": "Siemens",
+  "source_url": "https://support.industry.siemens.com/cs/attachments/109977302/s71200_system_manual_en-US.pdf",
+  "file_name": "s71200_system_manual_en-US.pdf",
+  "sha256": "ed4887e051efff4592e3e01775a8e81b9504b6b6fead7e1a6b780e3d4d57f37e",
+  "page_count": 1323,
+  "extracted_text": "knowledge_base/extracted/s71200_system_manual_en-US.txt",
+  "character_count": 2651555,
+  "extraction_library": "pypdf",
+  "is_index_only": false,
+  "extraction_timestamp": "2026-10-11T14:01:24.410571+00:00"
+}
